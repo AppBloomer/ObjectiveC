@@ -18,6 +18,8 @@
 #import "WalDefaultConst.h"
 #import "AMPARCMacros.h"
 #import "WalDeviceInfo.h"
+#import "ApiClient.h"
+#import "UserDefaultsHelper.h"
 
 
 @interface WalinnsTracker()
@@ -37,7 +39,7 @@ BOOL _inForeground;
 WalDeviceInfo *_deviceInfo;
 BOOL _useAdvertisingIdForDeviceId;
 static NSString *const BACKGROUND_QUEUE_NAME = @"BACKGROUND";
-
+NSDate *date;
 
  
 + (WalinnsTracker *)instance {
@@ -99,13 +101,33 @@ static NSString *const BACKGROUND_QUEUE_NAME = @"BACKGROUND";
             [_backgroundQueue setSuspended:NO];
 
         }];
+         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
  
     }
     return self;
 }
 - (void)initializeApiKey:(NSString *)apiKey{
     NSLog(@"Api key = %@" , apiKey);
-    
+ //   id object = [[WalinnsTracker alloc] init];
+
+    [UserDefaultsHelper setStringForKey :apiKey : @"project_token" ];
+   
+}
+
+-(void)appWillResignActive:(NSNotification*)note
+{
+    NSLog(@"WalinnsTracker app is bg/fg =%@", date);
+    NSDate *datee =[NSDate date];
+    NSString *duration = [WalinnsUtils sessionDuration: date];
+    NSMutableDictionary *event = [NSMutableDictionary dictionary];
+    [event setValue:_deviceInfo.vendorID forKey:@"device_id"];
+    [event setValue:[WalinnsUtils getUTCFormateDate:date] forKey:@"start_time"];
+    [event setValue:[WalinnsUtils getUTCFormateDate:datee] forKey:@"end_time"];
+    [event setValue:duration forKey:@"session_length"];
+    NSLog(@"WalinnsTracker app is bg/fg =%@", event);
+    [self activeState:@"no"];
+    [ApiClient pushedData:event :@"session"];
+
 }
 - (void) dealloc {
     //[self removeObservers];
@@ -126,8 +148,12 @@ static NSString *const BACKGROUND_QUEUE_NAME = @"BACKGROUND";
 }
 - (void) logEvent{
     NSLog(@"log event method");
+    date = [NSDate date];
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+
+    NSLog(@"Device id =%@",uuid);
     NSMutableDictionary *event = [NSMutableDictionary dictionary];
-    [event setValue:[WalDeviceInfo generateUUID] forKey:@"device_id"];
+    [event setValue:_deviceInfo.vendorID forKey:@"device_id"];
     [event setValue:_deviceInfo.appVersion forKey:@"app_version"];
     [event setValue:_deviceInfo.osName forKey:@"os_name"];
     [event setValue:_deviceInfo.osVersion forKey:@"os_version"];
@@ -136,35 +162,22 @@ static NSString *const BACKGROUND_QUEUE_NAME = @"BACKGROUND";
     [event setValue:_deviceInfo.carrier forKey:@"carrier"];
     [event setValue:_deviceInfo.country forKey:@"country"];
     [event setValue:_deviceInfo.language forKey:@"language"];
+    [event setValue:_deviceInfo.connectivity forKey:@"connectivity"];
+    [event setValue:@"false" forKey:@"play_service"];
+    [event setValue:@"false" forKey:@"bluetooth"];
+    [event setValue:_deviceInfo.screenDpi forKey:@"screen_dpi"];
+    [event setValue:_deviceInfo.screenHeight forKey:@"screen_height"];
+    [event setValue:_deviceInfo.screenWidth forKey:@"screen_width"];
+    [event setValue:@"example_ios@gmail.com" forKey:@"email"];
+    [event setValue:@"male" forKey:@"gender"];
+    [event setValue:@"25" forKey:@"age"];
+    [event setValue:[WalinnsUtils getUTCFormateDate:date] forKey:@"date_time"];
+    NSLog(@"JsonObject Deviceinfo =%@",event);
+    [ApiClient pushedData:event :@"devices"];
+    [self activeState:@"yes"];
     
-    NSLog(@"JsonObject Deviceinfo =%@",_deviceInfo.screenDpi);
-    NSLog(@"JsonObject Deviceinfo height =%@",_deviceInfo.screenWidth);
-    
-    NSError *error;
-    
-    NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:nil];
-    NSURL *url = [NSURL URLWithString:@"[JSON SERVER"];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url
-                                                           cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                                       timeoutInterval:60.0];
-    
-    [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    
-    [request setHTTPMethod:@"POST"];
-    
-    NSData *postData = [NSJSONSerialization dataWithJSONObject:event options:0 error:&error];
-    [request setHTTPBody:postData];
-    
-    
-    NSURLSessionDataTask *postDataTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        
-    }];
-    
-    [postDataTask resume];
- 
 }
+
 + (NSString*)getDeviceId {
     return [[WalinnsTracker instance] getDeviceId];
 }
@@ -260,5 +273,59 @@ static NSString *const BACKGROUND_QUEUE_NAME = @"BACKGROUND";
         return YES;
     }
 }
-
+-(void)trackEvent:(NSString *)event_name :(NSString *)event_type{
+    NSLog(@"track event method");
+    date = [NSDate date];
+    NSMutableDictionary *event = [NSMutableDictionary dictionary];
+    [event setValue: _deviceInfo.vendorID forKey:@"device_id"];
+    [event setValue:event_name forKey:@"event_name"];
+    [event setValue:event_type forKey:@"event_type"];
+    [event setValue:[WalinnsUtils getUTCFormateDate:date] forKey:@"date_time"];
+    NSLog(@"WalinnsTracker Events Request : =%@", event);
+    if([[UserDefaultsHelper getStringForKey:@"device"]  isEqual: @"authenticated"]){
+        [ApiClient pushedData:event :@"events"];
+    }else{
+        NSLog(@"Could not authenticated project token with app during initialization");
+    }
+}
+-(void)activeState:(NSString*)state{
+    date = [NSDate date];
+    NSMutableDictionary *event = [NSMutableDictionary dictionary];
+    [event setValue: _deviceInfo.vendorID forKey:@"device_id"];
+    [event setValue:state forKey:@"active_status"];
+    [event setValue:[WalinnsUtils getUTCFormateDate:date] forKey:@"date_time"];
+    NSLog(@"WalinnsTacker Active state : =%@", event);
+    if([[UserDefaultsHelper getStringForKey:@"device"]  isEqual: @"authenticated"]){
+        [ApiClient pushedData:event :@"fetchAppUserDetail"];
+    }else{
+        NSLog(@"Could not authenticated project token with app during initialization");
+    }
+}
+-(void)trackScreen:(NSString *)screen_name{
+    date = [NSDate date];
+    NSMutableDictionary *event = [NSMutableDictionary dictionary];
+    [event setValue: _deviceInfo.vendorID forKey:@"device_id"];
+    [event setValue:screen_name forKey:@"screen_name"];
+    [event setValue:[WalinnsUtils getUTCFormateDate:date] forKey:@"date_time"];
+    NSLog(@"WalinnsTacker Active state : =%@", event);
+     if([[UserDefaultsHelper getStringForKey:@"device"]  isEqual: @"authenticated"]){
+         [ApiClient pushedData:event :@"screenView"];
+     }else{
+         NSLog(@"Could not authenticated project token with app during initialization");
+     }
+}
+-(void)sendPush_Token:(NSString *)push_token{
+    date = [NSDate date];
+    NSMutableDictionary *event = [NSMutableDictionary dictionary];
+    [event setValue: _deviceInfo.vendorID forKey:@"device_id"];
+    [event setValue:push_token forKey:@"push_token"];
+    [event setValue:@"packagename" forKey:@"package_name"];
+    [event setValue:[WalinnsUtils getUTCFormateDate:date] forKey:@"date_time"];
+    NSLog(@"WalinnsTacker uninstall event: =%@", event);
+    if([[UserDefaultsHelper getStringForKey:@"device"]  isEqual: @"authenticated"]){
+        [ApiClient pushedData:event :@"uninstallcount"];
+    }else{
+        NSLog(@"Could not authenticated project token with app during initialization");
+    }
+}
 @end

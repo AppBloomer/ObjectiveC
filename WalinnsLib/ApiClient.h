@@ -9,4 +9,9 @@
 
 @interface ApiClient : NSObject
 
+@property NSString *url;
+
++ (void) pushedData:(NSDictionary *) requestData:(NSString *) flag;
+
+
 @end

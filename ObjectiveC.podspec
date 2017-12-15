@@ -14,7 +14,7 @@ s.author               = "walinns"
 #7.
 s.module_name          = "WalinnsTracker"
 #8.
-s.platform            = :ios, "10.3"
+s.platform            = :ios, "11.2"
 #9.
 s.source              = { :git => "https://github.com/Rejoylin/ObjectiveC.git", :tag => "1.0.0" }
 #10.

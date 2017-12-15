@@ -20,6 +20,7 @@
 #import <Foundation/Foundation.h>
 #import "WalinnsUtils.h"
 #import "AMPARCMacros.h"
+#import "UserDefaultsHelper.h"
 
 
 
@@ -145,6 +146,31 @@
 #endif
 }
 
++(NSString *)getUTCFormateDate:(NSDate *)localDate
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    NSTimeZone *timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+    [dateFormatter setTimeZone:timeZone];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+    NSString *dateString = [dateFormatter stringFromDate:localDate];
+    NSLog(@"converted date =%@", dateString);
+    return dateString;
+}
++(NSString *) sessionDuration:(NSDate *)startDate{
+    NSLog(@"Session func called");
+    NSDate * sessionEnd = [NSDate date];
+    NSLog(@"Session func called =%@" , startDate);
 
+    NSTimeInterval secondsBetween = [sessionEnd timeIntervalSinceDate:startDate];
+    NSDateComponentsFormatter *formatter = [[NSDateComponentsFormatter alloc] init];
+    formatter.allowedUnits = NSCalendarUnitHour | NSCalendarUnitMinute |
+    NSCalendarUnitSecond;
+    formatter.zeroFormattingBehavior = NSDateComponentsFormatterZeroFormattingBehaviorPad;
+    NSString *string = [formatter stringFromTimeInterval:secondsBetween];
+    NSLog(@"Start date :" , [WalinnsUtils getUTCFormateDate:startDate]);
+    NSLog(@"End date :", [WalinnsUtils getUTCFormateDate:sessionEnd]);
+    NSLog(@"%@", [@"0" stringByAppendingString:string]);
+    return [@"0" stringByAppendingString:string];
 
+}
 @end

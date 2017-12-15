@@ -190,17 +190,20 @@
 
 -(NSString*) country {
     if (!_country) {
-        _country = SAFE_ARC_RETAIN([[NSLocale localeWithLocaleIdentifier:@"en_US"] displayNameForKey:
-                                    NSLocaleCountryCode value:
-                                    [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode]]);
+        NSLocale *currentLocale = [NSLocale currentLocale];  // get the current locale.
+        NSString *countryCode = [currentLocale objectForKey:NSLocaleCountryCode];
+        NSLog(@"countryCode: %@", countryCode);
+        _country = SAFE_ARC_RETAIN(countryCode) ;
     }
     return _country;
 }
 
 -(NSString*) language {
     if (!_language) {
-        _language = SAFE_ARC_RETAIN([[NSLocale localeWithLocaleIdentifier:@"en_US"] displayNameForKey:
-                                     NSLocaleLanguageCode value:[[NSLocale preferredLanguages] objectAtIndex:0]]);
+        NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
+
+        _language = SAFE_ARC_RETAIN(language);
+ 
     }
     return _language;
 }

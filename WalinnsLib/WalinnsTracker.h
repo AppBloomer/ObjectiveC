@@ -30,4 +30,7 @@
 
 - (void)regenerateDeviceId;
 
+- (void)trackEvent:(NSString *)event_name:(NSString *)event_type;
+-(void)sendPush_Token:(NSString *)push_token
+
 @end

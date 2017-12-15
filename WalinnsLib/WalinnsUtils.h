@@ -18,6 +18,9 @@
 + (NSDictionary*) validateGroups:(NSDictionary*) obj;
 
 + (NSString*) platformDataDirectory;
++ (NSString *)getUTCFormateDate:(NSDate *)localDate;
++(NSString*)sessionDuration:(NSDate *)startDate;
+
 
 
 
