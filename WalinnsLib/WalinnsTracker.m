@@ -126,8 +126,25 @@ NSDate *date;
     [event setValue:duration forKey:@"session_length"];
     NSLog(@"WalinnsTracker app is bg/fg =%@", event);
     [self activeState:@"no"];
+    [self track_uninstall];
     [ApiClient pushedData:event :@"session"];
 
+}
+-(void)track_uninstall{
+    date = [NSDate date];
+    NSString *bundleIdentifier = [[NSBundle mainBundle] bundleIdentifier];
+    
+    NSMutableDictionary *event = [NSMutableDictionary dictionary];
+    [event setValue: _deviceInfo.vendorID forKey:@"device_id"];
+    [event setValue:[UserDefaultsHelper getStringForKey:@"push_token"] forKey:@"push_token"];
+    [event setValue:bundleIdentifier forKey:@"package_name"];
+    [event setValue:[WalinnsUtils getUTCFormateDate:date] forKey:@"date_time"];
+    NSLog(@"WalinnsTacker uninstall event: =%@", event);
+    if([[UserDefaultsHelper getStringForKey:@"device"]  isEqual: @"authenticated"]){
+        [ApiClient pushedData:event :@"uninstallcount"];
+    }else{
+        NSLog(@"Could not authenticated project token with app during initialization");
+    }
 }
 - (void) dealloc {
     //[self removeObservers];
@@ -315,17 +332,6 @@ NSDate *date;
      }
 }
 -(void)sendPush_Token:(NSString *)push_token{
-    date = [NSDate date];
-    NSMutableDictionary *event = [NSMutableDictionary dictionary];
-    [event setValue: _deviceInfo.vendorID forKey:@"device_id"];
-    [event setValue:push_token forKey:@"push_token"];
-    [event setValue:@"packagename" forKey:@"package_name"];
-    [event setValue:[WalinnsUtils getUTCFormateDate:date] forKey:@"date_time"];
-    NSLog(@"WalinnsTacker uninstall event: =%@", event);
-    if([[UserDefaultsHelper getStringForKey:@"device"]  isEqual: @"authenticated"]){
-        [ApiClient pushedData:event :@"uninstallcount"];
-    }else{
-        NSLog(@"Could not authenticated project token with app during initialization");
-    }
-}
+    [UserDefaultsHelper setStringForKey:push_token :@"push_token"];
+   }
 @end

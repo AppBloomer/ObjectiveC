@@ -14,8 +14,6 @@
 @implementation ApiClient
 
 
-
-
 +(void) pushedData:(NSDictionary*) requesData :(NSString *) flag{
     NSError *error;
     
