@@ -21,7 +21,7 @@
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration delegate:self delegateQueue:nil];
     NSString *project_token = [UserDefaultsHelper getStringForKey:@"project_token"];
-    NSString *str = @"http://182.156.249.254:8083/";
+    NSString *str =  @"http://ec2-18-218-53-112.us-east-2.compute.amazonaws.com:8080/";
     str = [str stringByAppendingString:flag];
     NSURL *urll = [NSURL URLWithString:str];
     NSLog(@"Final URL =%@", urll);
@@ -52,7 +52,7 @@
         }
         else
         {
-            NSLog(@"Error");
+            NSLog(@"Errorrrrrr = %@" , error);
         }
     }];
     
