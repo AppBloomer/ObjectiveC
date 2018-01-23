@@ -31,6 +31,9 @@
 - (void)regenerateDeviceId;
 
 - (void)trackEvent:(NSString *)event_name:(NSString *)event_type;
+
+-(void)trackScreen:(NSString *)screen_name;
+
 -(void)sendPush_Token:(NSString *)push_token;
 
 @end
