@@ -19,7 +19,6 @@
 
 #import <Foundation/Foundation.h>
 #import "WalinnsUtils.h"
-#import "AMPARCMacros.h"
 #import "UserDefaultsHelper.h"
 
 
@@ -38,7 +37,7 @@
     NSString *uuidStr = (NSString *) CFUUIDCreateString(kCFAllocatorDefault, uuid);
 #endif
     CFRelease(uuid);
-    return SAFE_ARC_AUTORELEASE(uuidStr);
+    return  uuidStr;
 }
 
 + (id) makeJSONSerializable:(id) obj
@@ -66,7 +65,7 @@
         for (id i in objCopy) {
             [arr addObject:[self makeJSONSerializable:i]];
         }
-        SAFE_ARC_RELEASE(objCopy);
+         objCopy;
         return [NSArray arrayWithArray:arr];
     }
     if ([obj isKindOfClass:[NSDictionary class]]) {
@@ -76,7 +75,7 @@
             NSString *coercedKey = [self coerceToString:key withName:@"property key"];
             dict[coercedKey] = [self makeJSONSerializable:objCopy[key]];
         }
-        SAFE_ARC_RELEASE(objCopy);
+         objCopy;
         return [NSDictionary dictionaryWithDictionary:dict];
     }
     NSString *str = [obj description];

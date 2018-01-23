@@ -7,7 +7,6 @@
 
 #import "WalDeviceInfo.h"
 #import <Foundation/Foundation.h>
-#import "AMPARCMacros.h"
 #import "WalDeviceInfo.h"
 #import "WalinnsUtils.h"
 #import "WalDefaultConst.h"
@@ -44,25 +43,11 @@
     self = [super init];
     return self;
 }
-- (void) dealloc {
-    SAFE_ARC_RELEASE(_appVersion);
-    SAFE_ARC_RELEASE(_osVersion);
-    SAFE_ARC_RELEASE(_model);
-    SAFE_ARC_RELEASE(_carrier);
-    SAFE_ARC_RELEASE(_country);
-    SAFE_ARC_RELEASE(_connectivity)
-    SAFE_ARC_RELEASE(_screenDpi)
-    SAFE_ARC_RELEASE(_screenWidth)
-    SAFE_ARC_RELEASE(_screenHeight)
-    SAFE_ARC_RELEASE(_language);
-    SAFE_ARC_RELEASE(_advertiserID);
-    SAFE_ARC_RELEASE(_vendorID);
-    SAFE_ARC_SUPER_DEALLOC();
-}
+
 
 -(NSString*) appVersion {
     if (!_appVersion) {
-        _appVersion = SAFE_ARC_RETAIN([[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleShortVersionString"]);
+        _appVersion = [[[NSBundle mainBundle] infoDictionary] valueForKey:@"CFBundleShortVersionString"];
     }
     return _appVersion;
 }
@@ -71,7 +56,7 @@
 }
 -(NSString*) osVersion {
     if (!_osVersion) {
-        _osVersion = SAFE_ARC_RETAIN([[UIDevice currentDevice] systemVersion]);
+        _osVersion =  [[UIDevice currentDevice] systemVersion];
     }
     return _osVersion;
 }
@@ -82,7 +67,7 @@
 
 -(NSString*) model {
     if (!_model) {
-        _model = SAFE_ARC_RETAIN([WalDeviceInfo getPhoneModel]);
+        _model =  [WalDeviceInfo getPhoneModel];
     }
     return _model;
 }
@@ -169,7 +154,7 @@
         SEL subscriberCellularProvider = NSSelectorFromString(@"subscriberCellularProvider");
         SEL carrierName = NSSelectorFromString(@"carrierName");
         if (CTTelephonyNetworkInfo && subscriberCellularProvider && carrierName) {
-            networkInfo = SAFE_ARC_RETAIN([[NSClassFromString(@"CTTelephonyNetworkInfo") alloc] init]);
+            networkInfo =  [[NSClassFromString(@"CTTelephonyNetworkInfo") alloc] init];
             id carrier = nil;
             id (*imp1)(id, SEL) = (id (*)(id, SEL))[networkInfo methodForSelector:subscriberCellularProvider];
             if (imp1) {
@@ -177,12 +162,12 @@
             }
             NSString* (*imp2)(id, SEL) = (NSString* (*)(id, SEL))[carrier methodForSelector:carrierName];
             if (imp2) {
-                _carrier = SAFE_ARC_RETAIN(imp2(carrier, carrierName));
+                _carrier =  imp2(carrier, carrierName);
             }
         }
         // unable to fetch carrier information
         if (!_carrier) {
-            _carrier = SAFE_ARC_RETAIN(@"Unknown");
+            _carrier =  @"Unknown";
         }
     }
     return _carrier;
@@ -193,7 +178,7 @@
         NSLocale *currentLocale = [NSLocale currentLocale];  // get the current locale.
         NSString *countryCode = [currentLocale objectForKey:NSLocaleCountryCode];
         NSLog(@"countryCode: %@", countryCode);
-        _country = SAFE_ARC_RETAIN(countryCode) ;
+        _country =  countryCode ;
     }
     return _country;
 }
@@ -202,7 +187,7 @@
     if (!_language) {
         NSString *language = [[NSLocale preferredLanguages] objectAtIndex:0];
 
-        _language = SAFE_ARC_RETAIN(language);
+        _language =  language;
  
     }
     return _language;
@@ -214,7 +199,7 @@
             NSString *advertiserId = [WalDeviceInfo getAdvertiserID:5];
             if (advertiserId != nil &&
                 ![advertiserId isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
-                _advertiserID = SAFE_ARC_RETAIN(advertiserId);
+                _advertiserID =  advertiserId;
             }
         }
     }
@@ -227,7 +212,7 @@
             NSString *identifierForVendor = [WalDeviceInfo getVendorID:5];
             if (identifierForVendor != nil &&
                 ![identifierForVendor isEqualToString:@"00000000-0000-0000-0000-000000000000"]) {
-                _vendorID = SAFE_ARC_RETAIN(identifierForVendor);
+                _vendorID =  identifierForVendor;
             }
         }
     }
