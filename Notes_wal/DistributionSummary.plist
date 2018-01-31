@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UDo 2.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>25E19772789896ACE5118B263385DF278A08ADF3</string>
+				<key>dateExpires</key>
+				<string>22/01/19</string>
+				<key>type</key>
+				<string>iOS Distribution</string>
+			</dict>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>X83367U8R6.com.walinns.Notes</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>X83367U8R6</string>
+				<key>get-task-allow</key>
+				<false/>
+				<key>keychain-access-groups</key>
+				<array>
+					<string>X83367U8R6.com.walinns.Notes</string>
+				</array>
+			</dict>
+			<key>name</key>
+			<string>UDo.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>f8f95180-accc-4baf-a598-cf904e4a931c</string>
+				<key>name</key>
+				<string>iOS Team Ad Hoc Provisioning Profile: *</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>X83367U8R6</string>
+				<key>name</key>
+				<string>WALINNS INNOVATION LLP</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

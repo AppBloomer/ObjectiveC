@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreLocation/CoreLocation.h>
+#import <UIKit/UIKit.h>
  
 
 @interface WalinnsTracker : NSObject
@@ -35,5 +37,7 @@
 -(void)trackScreen:(NSString *)screen_name;
 
 -(void)sendPush_Token:(NSString *)push_token;
+
+- (void)graphUser:(NSDictionary *)fbGraphUser;
 
 @end

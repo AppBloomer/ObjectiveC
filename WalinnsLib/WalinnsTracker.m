@@ -40,6 +40,8 @@ WalDeviceInfo *_deviceInfo;
 BOOL _useAdvertisingIdForDeviceId;
 static NSString *const BACKGROUND_QUEUE_NAME = @"BACKGROUND";
 NSDate *date;
+NSString *gender = @"NA";
+NSString *bday = @"NA";
 
  
 + (WalinnsTracker *)instance {
@@ -142,8 +144,6 @@ NSDate *date;
     NSLog(@"WalinnsTacker uninstall event: =%@", event);
     if([[UserDefaultsHelper getStringForKey:@"device"]  isEqual: @"authenticated"]){
         [ApiClient pushedData:event :@"uninstallcount"];
-    }else{
-        NSLog(@"Could not authenticated project token with app during initialization");
     }
 }
 - (void) dealloc {
@@ -301,8 +301,6 @@ NSDate *date;
     NSLog(@"WalinnsTracker Events Request : =%@", event);
     if([[UserDefaultsHelper getStringForKey:@"device"]  isEqual: @"authenticated"]){
         [ApiClient pushedData:event :@"events"];
-    }else{
-        NSLog(@"Could not authenticated project token with app during initialization");
     }
 }
 -(void)activeState:(NSString*)state{
@@ -314,8 +312,6 @@ NSDate *date;
     NSLog(@"WalinnsTacker Active state : =%@", event);
     if([[UserDefaultsHelper getStringForKey:@"device"]  isEqual: @"authenticated"]){
         [ApiClient pushedData:event :@"fetchAppUserDetail"];
-    }else{
-        NSLog(@"Could not authenticated project token with app during initialization");
     }
 }
 -(void)trackScreen:(NSString *)screen_name{
@@ -327,11 +323,37 @@ NSDate *date;
     NSLog(@"WalinnsTacker Active state : =%@", event);
      if([[UserDefaultsHelper getStringForKey:@"device"]  isEqual: @"authenticated"]){
          [ApiClient pushedData:event :@"screenView"];
-     }else{
-         NSLog(@"Could not authenticated project token with app during initialization");
-     }
+     } 
 }
 -(void)sendPush_Token:(NSString *)push_token{
     [UserDefaultsHelper setStringForKey:push_token :@"push_token"];
    }
+
+- (void)graphUser:(NSDictionary *)fbGraphUser{
+    NSLog(@"Fb user data: %@",fbGraphUser[@"birthday"]);
+//    if ([fbGraphUser objectForKey:@"birthday"] != nil) {
+//        bday = fbGraphUser[@"birthday"];
+//    }
+//    if([fbGraphUser objectForKey:@"gender"] != nil){
+//        gender =fbGraphUser[@"gender"];
+//    }
+//    if(bday != nil){
+//    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+//    [dateFormat setDateFormat:@"dd/MM/YYYY"];
+//    NSDate *date = [dateFormat dateFromString:fbGraphUser[@"birthday"]];
+//    NSDate* now = [NSDate date];
+//    NSDateComponents* ageComponents = [[NSCalendar currentCalendar]
+//                                       components:NSCalendarUnitYear
+//                                       fromDate:date
+//                                       toDate:now
+//                                       options:0];
+//    NSInteger age = [ageComponents year];
+//        NSLog(@"Fb user data age: %@ and agecurrent %ld",gender , (long)age);
+
+    
+}
+ 
 @end
+
+ 
+
