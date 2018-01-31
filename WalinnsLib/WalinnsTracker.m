@@ -43,6 +43,7 @@ NSDate *date;
 NSString *gender = @"NA";
 NSString *bday = @"NA";
 
+
  
 + (WalinnsTracker *)instance {
     return [WalinnsTracker instanceWithName:nil];
@@ -331,28 +332,26 @@ NSString *bday = @"NA";
 
 - (void)graphUser:(NSDictionary *)fbGraphUser{
     NSLog(@"Fb user data: %@",fbGraphUser[@"birthday"]);
-//    if ([fbGraphUser objectForKey:@"birthday"] != nil) {
-//        bday = fbGraphUser[@"birthday"];
-//    }
-//    if([fbGraphUser objectForKey:@"gender"] != nil){
-//        gender =fbGraphUser[@"gender"];
-//    }
-//    if(bday != nil){
-//    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-//    [dateFormat setDateFormat:@"dd/MM/YYYY"];
-//    NSDate *date = [dateFormat dateFromString:fbGraphUser[@"birthday"]];
-//    NSDate* now = [NSDate date];
-//    NSDateComponents* ageComponents = [[NSCalendar currentCalendar]
-//                                       components:NSCalendarUnitYear
-//                                       fromDate:date
-//                                       toDate:now
-//                                       options:0];
-//    NSInteger age = [ageComponents year];
-//        NSLog(@"Fb user data age: %@ and agecurrent %ld",gender , (long)age);
-
-    
+    if ([fbGraphUser objectForKey:@"birthday"] != nil) {
+        bday = fbGraphUser[@"birthday"];
+    }
+    if([fbGraphUser objectForKey:@"gender"] != nil){
+        gender =fbGraphUser[@"gender"];
+    }
+    if(bday != nil){
+    NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+    [dateFormat setDateFormat:@"dd/MM/YYYY"];
+    NSDate *date = [dateFormat dateFromString:fbGraphUser[@"birthday"]];
+    NSDate* now = [NSDate date];
+    NSDateComponents* ageComponents = [[NSCalendar currentCalendar]
+                                       components:NSCalendarUnitYear
+                                       fromDate:date
+                                       toDate:now
+                                       options:0];
+    NSInteger age = [ageComponents year];
+        NSLog(@"Fb user data age: %@ and agecurrent %ld",gender , (long)age);
 }
- 
+}
 @end
 
  
